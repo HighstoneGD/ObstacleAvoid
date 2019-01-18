@@ -3,19 +3,24 @@ package com.obstacleavoid.screen;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.obstacleavoid.config.GameConfig;
 import com.obstacleavoid.entity.Player;
 import com.obstacleavoid.util.GdxUtils;
 import com.obstacleavoid.util.ViewportUtils;
+import com.obstacleavoid.util.debug.DebugCameraController;
 
 public class GameScreen implements Screen {
+
+    private static final Logger log = new Logger(GameScreen.class.getName(), Logger.DEBUG);
 
     private OrthographicCamera camera;
     private Viewport viewport;
     private ShapeRenderer renderer;
     private Player player;
+    private DebugCameraController debugCameraController;
 
     @Override
     public void show() {
@@ -27,18 +32,40 @@ public class GameScreen implements Screen {
         player = new Player();
 
         // calculate position
-        float startPlayerX = GameConfig.WORLD_WIDTH / 2f;
-        float startPlayerY = 1;
+//        float startPlayerX = GameConfig.WORLD_WIDTH / 2f;
+//        float startPlayerY = 1;
+        float startPlayerX = 12;
+        float startPlayerY = 12;
 
         // position player
         player.setPosition(startPlayerX, startPlayerY);
+
+        // create debug camera controller
+        debugCameraController = new DebugCameraController();
+        debugCameraController.setStartPosition(GameConfig.WORLD_CENTER_X, GameConfig.WORLD_CENTER_Y);
     }
 
     @Override
     public void render(float delta) {
+        debugCameraController.handleDebugInput(delta);
+        debugCameraController.applyTo(camera);
+
+        // update world
+        update(delta);
+
+        // clear screen
         GdxUtils.clearScreen();
 
+        // debug graphics
         renderDebug();
+    }
+
+    private void update(float delta) {
+        updatePlayer();
+    }
+
+    private void updatePlayer() {
+        player.update();
     }
 
     private void renderDebug() {
