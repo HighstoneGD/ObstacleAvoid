@@ -37,8 +37,9 @@ public class GameScreen implements Screen {
     private Player player;
     private Array<Obstacle> obstacles = new Array<Obstacle>();
     private float obstacleTimer;
-
-    private boolean alive = true;
+    private float scoreTimer;
+    private int lives = GameConfig.LIVES_START;
+    private int score;
 
     private DebugCameraController debugCameraController;
 
@@ -74,12 +75,13 @@ public class GameScreen implements Screen {
         debugCameraController.applyTo(camera);
 
         // update world
-        if (alive) {
-            update(delta);
-        }
+        update(delta);
 
         // clear screen
         GdxUtils.clearScreen();
+
+        // render ui/hud
+        renderUi();
 
         // debug graphics
         renderDebug();
@@ -88,9 +90,11 @@ public class GameScreen implements Screen {
     private void update(float delta) {
         updatePlayer();
         updateObstacles(delta);
+        updateScore(delta);
 
         if (isPlayerCollidingWithObstacle()) {
-            alive = false;
+            log.debug("Collision detected");
+            lives--;
         }
     }
 
@@ -142,6 +146,27 @@ public class GameScreen implements Screen {
         }
     }
 
+    private void renderUi() {
+        batch.setProjectionMatrix(hudCamera.combined);
+        batch.begin();
+
+        String livesText = "LIVES: " + lives;
+        layout.setText(font, livesText);
+
+        font.draw(batch, livesText,
+                20,
+                GameConfig.HUD_HEIGHT - layout.height);
+
+        String scoreText = "SCORE: " + score;
+        layout.setText(font, scoreText);
+
+        font.draw(batch, scoreText,
+                GameConfig.HUD_WIDTH - layout.width - 20,
+                GameConfig.HUD_HEIGHT - layout.height);
+
+        batch.end();
+    }
+
     private void renderDebug() {
 
         renderer.setProjectionMatrix(camera.combined);
@@ -162,6 +187,15 @@ public class GameScreen implements Screen {
         }
     }
 
+    private void updateScore(float delta) {
+        scoreTimer += delta;
+
+        if (scoreTimer >= GameConfig.SCORE_MAX_TIME) {
+            score += MathUtils.random(1, 5);
+            scoreTimer = 0;
+        }
+    }
+
     @Override
     public void dispose() {
         renderer.dispose();
@@ -172,6 +206,7 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
+        hudViewport.update(width, height, true);
         ViewportUtils.debugPixelPerUnit(viewport);
     }
 
