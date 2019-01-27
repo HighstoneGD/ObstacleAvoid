@@ -1,13 +1,18 @@
 package com.obstacleavoid.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.obstacleavoid.assets.AssetPaths;
 import com.obstacleavoid.config.GameConfig;
 import com.obstacleavoid.entity.Obstacle;
 import com.obstacleavoid.entity.Player;
@@ -23,6 +28,12 @@ public class GameScreen implements Screen {
     private Viewport viewport;
     private ShapeRenderer renderer;
 
+    private OrthographicCamera hudCamera;
+    private Viewport hudViewport;
+    private SpriteBatch batch;
+    private BitmapFont font;
+    private final GlyphLayout layout = new GlyphLayout();
+
     private Player player;
     private Array<Obstacle> obstacles = new Array<Obstacle>();
     private float obstacleTimer;
@@ -36,6 +47,11 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         viewport = new FitViewport(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, camera);
         renderer = new ShapeRenderer();
+
+        hudCamera = new OrthographicCamera();
+        hudViewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT, hudCamera);
+        batch = new SpriteBatch();
+        font = new BitmapFont(Gdx.files.internal(AssetPaths.UI_FONT));
 
         // create player
         player = new Player();
@@ -149,6 +165,8 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         renderer.dispose();
+        batch.dispose();
+        font.dispose();
     }
 
     @Override
