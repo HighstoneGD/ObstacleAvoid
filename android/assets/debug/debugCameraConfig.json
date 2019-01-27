@@ -5,7 +5,7 @@
   "zoomSpeed": "2",
 
   // move keys
-  "upKey": "T",
+  "upKey": "W",
   "downKey": "S",
   "leftKey": "A",
   "rightKey": "D",
