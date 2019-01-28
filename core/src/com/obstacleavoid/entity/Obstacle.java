@@ -2,13 +2,14 @@ package com.obstacleavoid.entity;
 
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
+import com.obstacleavoid.config.GameConfig;
 
 public class Obstacle extends GameObjectBase {
 
     private static final float BOUNDS_RADIUS = 0.3f;
     private static final float SIZE = BOUNDS_RADIUS * 2;
 
-    private float ySpeed = 0.1f;
+    private float ySpeed = GameConfig.MEDIUM_OBSTACLE_SPEED;
     private boolean hit;
 
     public Obstacle() {
@@ -32,5 +33,9 @@ public class Obstacle extends GameObjectBase {
 
     public boolean isNotHit() {
         return !hit;
+    }
+
+    public void setYSpeed(float ySpeed) {
+        this.ySpeed = ySpeed;
     }
 }
