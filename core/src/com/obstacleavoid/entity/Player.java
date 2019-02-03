@@ -6,11 +6,9 @@ import com.obstacleavoid.config.GameConfig;
 
 public class Player extends GameObjectBase {
 
-    private static final float BOUNDS_RADIUS = 0.4f;
-    private static final float SIZE = BOUNDS_RADIUS * 2;
-
     public Player() {
-        super(BOUNDS_RADIUS);
+        super(GameConfig.PLAYER_BOUNDS_RADIUS);
+        setSize(GameConfig.PLAYER_SIZE, GameConfig.PLAYER_SIZE);
     }
 
 
@@ -24,9 +22,5 @@ public class Player extends GameObjectBase {
         }
 
         setX(getX() + xSpeed);
-    }
-
-    public float getWidth() {
-        return SIZE;
     }
 }

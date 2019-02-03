@@ -3,8 +3,11 @@ package com.obstacleavoid.screen;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.obstacleavoid.config.DifficultyLevel;
 import com.obstacleavoid.config.GameConfig;
+import com.obstacleavoid.entity.Background;
 import com.obstacleavoid.entity.Obstacle;
 import com.obstacleavoid.entity.Player;
 
@@ -16,12 +19,14 @@ public class GameController {
     // == attributes ==
     private Player player;
     private Array<Obstacle> obstacles = new Array<Obstacle>();
+    private Background background;
     private float obstacleTimer;
     private float scoreTimer;
     private int lives = GameConfig.LIVES_START;
     private int score;
     private int displayScore;
     private DifficultyLevel difficultyLevel = DifficultyLevel.MEDIUM;
+    private Pool<Obstacle> obstaclePool;
 
     // == constructors ==
     public GameController() {
@@ -34,11 +39,19 @@ public class GameController {
         player = new Player();
 
         // calculate position
-        float startPlayerX = GameConfig.WORLD_WIDTH / 2f;
-        float startPlayerY = 1;
+        float startPlayerX = (GameConfig.WORLD_WIDTH - GameConfig.PLAYER_SIZE)/ 2f;
+        float startPlayerY = 1 - GameConfig.PLAYER_SIZE / 2f;
 
         // position player
         player.setPosition(startPlayerX, startPlayerY);
+
+        // create obstacle pool
+        obstaclePool = Pools.get(Obstacle.class, 40);
+
+        // create background
+        background = new Background();
+        background.setPosition(0, 0);
+        background.setSize(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT);
     }
 
     // == public methods ==
@@ -57,6 +70,26 @@ public class GameController {
             log.debug("Collision detected");
             lives--;
         }
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Array<Obstacle> getObstacles() {
+        return obstacles;
+    }
+
+    public Background getBackground() {
+        return background;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public int getDisplayScore() {
+        return displayScore;
     }
 
     // == private methods ==
@@ -81,8 +114,8 @@ public class GameController {
 
     private void blockPlayerFromLeavingTheWorld() {
         float playerX = MathUtils.clamp(player.getX(),
-                player.getWidth() / 2f,
-                GameConfig.WORLD_WIDTH - player.getWidth() / 2f);
+                0,
+                GameConfig.WORLD_WIDTH - player.getWidth());
 
         player.setPosition(playerX, player.getY());
     }
@@ -93,23 +126,37 @@ public class GameController {
         }
 
         createNewObstacle(delta);
+        removePassedObstacles();
     }
 
     private void createNewObstacle(float delta) {
         obstacleTimer += delta;
 
         if (obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME) {
-            float min = 0f;
-            float max = GameConfig.WORLD_WIDTH;
+            float min = Obstacle.SIZE / 2f;
+            float max = GameConfig.WORLD_WIDTH - Obstacle.SIZE / 2f;
             float obstacleX = MathUtils.random(min, max);
             float obstacleY = GameConfig.WORLD_HEIGHT;
 
-            Obstacle obstacle = new Obstacle();
+            Obstacle obstacle = obstaclePool.obtain();
             obstacle.setYSpeed(difficultyLevel.getObstacleSpeed());
             obstacle.setPosition(obstacleX, obstacleY);
 
             obstacles.add(obstacle);
             obstacleTimer = 0f;
+        }
+    }
+
+    private void removePassedObstacles() {
+        if (obstacles.size > 0) {
+            Obstacle first = obstacles.first();
+
+            float minObstacleY = -Obstacle.SIZE;
+
+            if (first.getY() < minObstacleY) {
+                obstacles.removeValue(first, true);
+                obstaclePool.free(first);
+            }
         }
     }
 
@@ -126,7 +173,7 @@ public class GameController {
         if (displayScore < score) {
             displayScore = Math.min(
                     score,
-                    displayScore + (int) (40 * delta)
+                    displayScore + (int) (90 * delta)
             );
         }
     }
