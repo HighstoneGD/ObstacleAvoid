@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -70,6 +72,15 @@ public class GameRenderer implements Disposable {
     public void render(float delta) {
         debugCameraController.handleDebugInput(delta);
         debugCameraController.applyTo(camera);
+
+        if (Gdx.input.isTouched() && !controller.isGameOver()) {
+            Vector2 screenTouch = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+            Vector2 worldTouch = viewport.unproject(new Vector2(screenTouch));
+
+            Player player = controller.getPlayer();
+            worldTouch.x = MathUtils.clamp(worldTouch.x, 0, GameConfig.WORLD_WIDTH - player.getWidth());
+            player.setX(worldTouch.x);
+        }
 
         // clear screen
         GdxUtils.clearScreen();

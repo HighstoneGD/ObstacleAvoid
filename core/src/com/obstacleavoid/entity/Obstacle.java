@@ -7,15 +7,12 @@ import com.obstacleavoid.config.GameConfig;
 
 public class Obstacle extends GameObjectBase implements Pool.Poolable {
 
-    private static final float BOUNDS_RADIUS = 0.3f;
-    public static final float SIZE = BOUNDS_RADIUS * 2;
-
     private float ySpeed = GameConfig.MEDIUM_OBSTACLE_SPEED;
     private boolean hit;
 
     public Obstacle() {
-        super(BOUNDS_RADIUS);
-        setSize(SIZE, SIZE);
+        super(GameConfig.OBSTACLE_BOUNDS_RADIUS);
+        setSize(GameConfig.OBSTACLE_SIZE, GameConfig.OBSTACLE_SIZE);
     }
 
     public void update() {

@@ -27,6 +27,9 @@ public class GameConfig {
     public static final float PLAYER_BOUNDS_RADIUS = 0.4f;
     public static final float PLAYER_SIZE = PLAYER_BOUNDS_RADIUS * 2;
 
+    public static final float OBSTACLE_BOUNDS_RADIUS = 0.3f;
+    public static final float OBSTACLE_SIZE = OBSTACLE_BOUNDS_RADIUS * 2;
+
     public static final int LIVES_START = 3;
 
 }
