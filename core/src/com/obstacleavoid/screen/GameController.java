@@ -68,10 +68,11 @@ public class GameController {
         if (isPlayerCollidingWithObstacle()) {
             log.debug("Collision detected");
             lives--;
+            restart();
 
             if (isGameOver()) {
                 log.debug("Game Over");
-                restart();
+
             }
         }
     }
