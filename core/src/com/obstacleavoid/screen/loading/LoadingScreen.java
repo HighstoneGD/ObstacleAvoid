@@ -12,8 +12,6 @@ import com.obstacleavoid.config.GameConfig;
 import com.obstacleavoid.screen.game.GameScreen;
 import com.obstacleavoid.util.GdxUtils;
 
-import java.lang.reflect.Field;
-
 public class LoadingScreen extends ScreenAdapter {
 
     // == constants ==
@@ -27,6 +25,7 @@ public class LoadingScreen extends ScreenAdapter {
 
     private float progress;
     private float waitTime = 0.75f;
+    private boolean changeScreen;
 
     private final ObstacleAvoidGame game;
     private final AssetManager assetManager;
@@ -61,6 +60,10 @@ public class LoadingScreen extends ScreenAdapter {
         draw();
 
         renderer.end();
+
+        if (changeScreen) {
+            game.setScreen(new GameScreen(game));
+        }
     }
 
     @Override
@@ -88,7 +91,7 @@ public class LoadingScreen extends ScreenAdapter {
             waitTime -= delta;
 
             if (waitTime <= 0) {
-                game.setScreen(new GameScreen(game));
+                changeScreen = true;
             }
         }
     }

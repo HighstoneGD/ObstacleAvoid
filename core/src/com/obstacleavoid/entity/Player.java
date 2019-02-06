@@ -1,7 +1,5 @@
 package com.obstacleavoid.entity;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.obstacleavoid.config.GameConfig;
 
 public class Player extends GameObjectBase {
