@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.obstacleavoid.common.GameManager;
 import com.obstacleavoid.config.DifficultyLevel;
 import com.obstacleavoid.config.GameConfig;
 import com.obstacleavoid.entity.Background;
@@ -24,7 +25,7 @@ public class GameController {
     private Background background;
     private float obstacleTimer;
     private float scoreTimer;
-    private final float startPlayerX = (GameConfig.WORLD_WIDTH - GameConfig.PLAYER_SIZE)/ 2f;
+    private final float startPlayerX = (GameConfig.WORLD_WIDTH - GameConfig.PLAYER_SIZE) / 2f;
     private final float startPlayerY = 1 - GameConfig.PLAYER_SIZE / 2f;
     private int lives = GameConfig.LIVES_START;
     private int score;
@@ -68,11 +69,12 @@ public class GameController {
         if (isPlayerCollidingWithObstacle()) {
             log.debug("Collision detected");
             lives--;
-            restart();
 
             if (isGameOver()) {
                 log.debug("Game Over");
-
+                GameManager.INSTANCE.updateHighScore(score);
+            } else {
+                restart();
             }
         }
     }

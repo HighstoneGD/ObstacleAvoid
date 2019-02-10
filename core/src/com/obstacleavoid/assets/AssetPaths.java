@@ -6,5 +6,7 @@ public class AssetPaths {
 
     public static final String GAME_PLAY = "gameplay/gameplay.atlas";
 
+    public static final String UI = "ui/ui.atlas";
+
     private AssetPaths() {}
 }

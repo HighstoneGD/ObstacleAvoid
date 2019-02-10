@@ -20,10 +20,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
-
         controller = new GameController();
-        renderer = new GameRenderer(controller, assetManager);
+        renderer = new GameRenderer(game.getBatch(), controller, assetManager);
     }
 
 
