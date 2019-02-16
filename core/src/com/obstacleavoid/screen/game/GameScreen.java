@@ -3,6 +3,7 @@ package com.obstacleavoid.screen.game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.obstacleavoid.ObstacleAvoidGame;
+import com.obstacleavoid.screen.menu.MenuScreen;
 
 public class GameScreen implements Screen {
 
@@ -20,7 +21,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        controller = new GameController();
+        controller = new GameController(game);
         renderer = new GameRenderer(game.getBatch(), controller, assetManager);
     }
 
@@ -29,6 +30,10 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         controller.update(delta);
         renderer.render(delta);
+
+        if (controller.isGameOver()) {
+            game.setScreen(new MenuScreen(game));
+        }
     }
 
     @Override

@@ -8,5 +8,10 @@ public class AssetPaths {
 
     public static final String UI = "ui/ui.atlas";
 
-    private AssetPaths() {}
+    public static final String UI_SKIN = "ui/uiskin.json";
+
+    public static final String HIT = "sounds/hit.wav";
+
+    private AssetPaths() {
+    }
 }
